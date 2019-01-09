@@ -4,7 +4,8 @@
 \alias{gg}
 \title{Gaussian mean estimation with Gaussian side information}
 \usage{
-gg(x1, s1, x2, s2, rho = 0, K = 10, C = 5, tol = 1e-05, maxit = 100)
+gg(x1, s1, x2, s2, rho = 0, K = 10, C = 5, tol = 1e-05,
+  maxit = 100)
 }
 \arguments{
 \item{x1}{primary Gaussian sequence}
