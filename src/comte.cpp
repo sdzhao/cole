@@ -17,9 +17,10 @@
 
 using namespace Rcpp;
 
+//' @export
 // [[Rcpp::export]]
 List comte(arma::mat y, arma::mat x, arma::mat ss, arma::mat B, double tol , int maxit, int p, int q, int n, arma::mat newx){
-  
+
   //initialization:
   int mp1 = B.n_rows; // g * q
   arma::vec f = arma::ones(mp1) / mp1;
@@ -38,7 +39,7 @@ List comte(arma::mat y, arma::mat x, arma::mat ss, arma::mat B, double tol , int
   arma::mat A = arma::reshape(Avec, q, mp1);
 
   //EM algorithm
-  arma::mat ll; 
+  arma::mat ll;
   arma::mat oldll;
   arma::mat diff;
   arma::mat thres;
@@ -75,14 +76,15 @@ List comte(arma::mat y, arma::mat x, arma::mat ss, arma::mat B, double tol , int
   arma::mat fmat = arma::repmat(f,1,q);
   arma::mat numeritor2 = (newx * bs.submat(0,0,mp1-1,p-1).t()) * (A%fmat.t()).t() ;
   arma::mat denomiator2 = arma::repmat(1/(A*f),1, n_new);
-  esty = numeritor2 % denomiator2.t(); 
+  esty = numeritor2 % denomiator2.t();
 
   return List::create(_["f"] = f, _["A"] = A, _["bs"] = bs, _["esty"] = esty, _["minA"] = A.min(),  _["maxA"] = A.max());
 }
 
+//' @export
 // [[Rcpp::export]]
 List comte_min(arma::mat y, arma::mat x, arma::mat ss, arma::mat B, double tol , int maxit, int p, int q, int n, arma::mat newx){
-  
+
   //initialization:
   int mp1 = B.n_rows;
   arma::vec f = arma::ones(mp1) / mp1;
@@ -101,7 +103,7 @@ List comte_min(arma::mat y, arma::mat x, arma::mat ss, arma::mat B, double tol ,
   arma::mat A = arma::reshape(Avec, q, mp1);
 
   //EM algorithm
-  arma::mat ll; 
+  arma::mat ll;
   arma::mat oldll;
   arma::mat diff;
   arma::mat thres;
@@ -125,13 +127,13 @@ List comte_min(arma::mat y, arma::mat x, arma::mat ss, arma::mat B, double tol ,
       break;
     }
   }
-  
+
   int n_new = newx.n_rows;
   arma::mat esty(n_new,q);
   arma::mat fmat = arma::repmat(f,1,q);
   arma::mat numeritor2 = (newx * bs.submat(0,0,mp1-1,p-1).t()) * (A%fmat.t()).t() ;
   arma::mat denomiator2 = arma::repmat(1/(A*f),1, n_new);
-  esty = numeritor2 % denomiator2.t(); 
+  esty = numeritor2 % denomiator2.t();
 
   return List::create(_["f"] = f, _["A"] = A, _["bs"] = bs, _["esty"] = esty);
 }
