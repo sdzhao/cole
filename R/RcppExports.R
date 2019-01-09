@@ -4,7 +4,7 @@
 #' Compound decision method for two-sieded models
 #'
 #' EM algorithm for predicting unseen data for two-sided linear model based on candidate parameters estimated by simple models
-#' 
+#'
 #'
 #' @param y outcomes for training with dimension n by q
 #' @param x features for training with dimension n by p
@@ -28,7 +28,7 @@
 #' p = 10
 #' q = 5
 #' n = 50
-#' 
+#'
 #' x = matrix(rnorm(n*p,0,10), n, p)
 #' beta = matrix(rnorm(p*q,0,10), q, p)
 #' e = matrix(rnorm(n*q,0,0.1),n,q)
@@ -37,23 +37,19 @@
 #' tol = 0.001
 #' maxit = 1000
 #' x_test = matrix(rnorm(n*p,0,1), n, p)
-#' 
-#' output = comte(y, x, s2, beta, tol, maxit, p, q, n, x_test)
-#' 
-#' }
 #'
-#' @useDynLib cole
+#' output = comte(y, x, s2, beta, tol, maxit, p, q, n, x_test)
+#'
+#' }
 #' @export
-
 comte <- function(y, x, ss, B, tol, maxit, p, q, n, newx) {
-    .Call('_cole_comte', PACKAGE = 'cole', y, x, ss, B, tol, maxit, p, q, n, newx)
+    .Call(`_cole_comte`, y, x, ss, B, tol, maxit, p, q, n, newx)
 }
-
 
 #' Compound decision method for two-sieded models with minimal sigma square
 #'
 #' EM algorithm for predicting unseen data for two-sided linear model based on candidate parameters estimated by simple models. Sigma square is taken to be the minimum for better accuracy in some situations
-#' 
+#'
 #'
 #' @param y outcomes for training with dimension n by q
 #' @param x features for training with dimension n by p
@@ -77,7 +73,7 @@ comte <- function(y, x, ss, B, tol, maxit, p, q, n, newx) {
 #' p = 10
 #' q = 5
 #' n = 50
-#' 
+#'
 #' x = matrix(rnorm(n*p,0,10), n, p)
 #' beta = matrix(rnorm(p*q,0,10), q, p)
 #' e = matrix(rnorm(n*q,0,0.1),n,q)
@@ -86,15 +82,13 @@ comte <- function(y, x, ss, B, tol, maxit, p, q, n, newx) {
 #' tol = 0.001
 #' maxit = 1000
 #' x_test = matrix(rnorm(n*p,0,1), n, p)
-#' 
+#'
 #' output = comte_min(y, x, s2, beta, tol, maxit, p, q, n, x_test)
-#' 
+#'
 #' }
 #'
-#' @useDynLib cole
 #' @export
-
 comte_min <- function(y, x, ss, B, tol, maxit, p, q, n, newx) {
-    .Call('_cole_comte_min', PACKAGE = 'cole', y, x, ss, B, tol, maxit, p, q, n, newx)
+    .Call(`_cole_comte_min`, y, x, ss, B, tol, maxit, p, q, n, newx)
 }
 

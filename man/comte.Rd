@@ -54,5 +54,4 @@ x_test = matrix(rnorm(n*p,0,1), n, p)
 output = comte(y, x, s2, beta, tol, maxit, p, q, n, x_test)
 
 }
-
 }
