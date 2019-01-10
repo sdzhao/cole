@@ -4,16 +4,12 @@
 \alias{comte}
 \title{Compound decision method for two-sieded models}
 \usage{
-comte(y, x, ss, B, tol, maxit, p, q, n, newx)
+comte(y, x, S, tol, maxit, p, q, n, newx, min_s2 = NULL)
 }
 \arguments{
 \item{y}{outcomes for training with dimension n by q}
 
 \item{x}{features for training with dimension n by p}
-
-\item{ss}{condidates sigma square estimated by other mithods (lasso, ridge, camel)}
-
-\item{B}{condidates beta estimated by other mithods (lasso, ridge, camel)}
 
 \item{tol}{error tolerance for convergence}
 
@@ -26,6 +22,10 @@ comte(y, x, ss, B, tol, maxit, p, q, n, newx)
 \item{n}{number of observations for training}
 
 \item{newx}{new observation for prediction}
+
+\item{ss}{condidates sigma square estimated by other mithods (lasso, ridge, camel)}
+
+\item{B}{condidates beta estimated by other mithods (lasso, ridge, camel)}
 }
 \value{
 \item{f}{estimation of prior of beta}
@@ -50,8 +50,9 @@ s2 = matrix(rep(0.1,q), q, 1)
 tol = 0.001
 maxit = 1000
 x_test = matrix(rnorm(n*p,0,1), n, p)
+output1 = comte(y=y, x=x, S=beta, tol=tol, maxit, p, q, n, x_test, min_s2=0.1)
+output2 = comte(y=y, x=x, S=cbind(beta,s2), tol=tol, maxit, p, q, n, x_test)
 
-output = comte(y, x, s2, beta, tol, maxit, p, q, n, x_test)
 
 }
 }

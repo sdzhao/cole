@@ -1,6 +1,6 @@
 Package: cole
 Title: COmpound Loss Emporium
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: person("Dave", "Zhao", email = "dave.zhao@gmail.com", role = c("aut", "cre"))
 Description: Procedures for minimizing various compound loss functions, e.g. squared error loss for the simultaneous estimation of normal means.
 Depends: R (>= 3.4.0)
