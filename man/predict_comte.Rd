@@ -2,33 +2,20 @@
 % Please edit documentation in R/RcppExports.R
 \name{predict_comte}
 \alias{predict_comte}
-\title{Prediction}
+\title{Predicting function for compound decision method}
 \usage{
 predict_comte(comte_obj, newx)
 }
 \arguments{
-\item{newx}{a \eqn{m x p} matrix corresponds to testing data.}
+\item{comte_obj}{returned object from comte function that contains important information for predicting.}
 
-\item{y}{\eqn{n x q} matrix of outcomes for training.}
-
-\item{x}{\eqn{n x p} matrix of features for training.}
-
-\item{S}{\eqn{d x L} matrix of support points. If \eqn{L = p + 1}, then the first p columns are \eqn{\beta}s and the last column is the corresponding residual error estimates. If \eqn{L = p}, then each column of S is a vector of \eqn{\beta}s and argument min_s2 is required. \eqn{d = q x g} where g is the number of groups of support points. Support points can be estimated by other methods that solve multivariate linear regression. Eg. LASSO from glmnet, CMR from camel.}
-
-\item{tol}{error tolerance for convergence of EM algorithm}
-
-\item{maxit}{maximum number of allowable iterations}
-
-\item{min_s2}{a positive number corresponds to minimal variance of estimated y. min_s2 is required when there are p columns in S}
+\item{newx}{\eqn{m x p} matrix corresponds to testing data.}
 }
 \value{
-\item{f}{vector with \eqn{g x q} elements that describes the mixture of \eqn{\beta}s}
-\item{esty}{\eqn{m x q} matrix of estimated y based on newx}
+\item{esty}{\eqn{m x q} matrix of estimated y based on newx. }
 }
 \description{
-The function uses EM algorithm to solve multivariate linear regression problems 
-\deqn{Y = XB + \epsilon}
-both outcome \eqn{Y} and feature \eqn{X} are multi-dimensional. Users can set distinct residual estimations for different outcomes or set identical estimation for more robust results. Details can be found in \href{https://github.com/sdzhao/cole}{our paper}
+The function takes returned object from comte and testing data as input. Return value is the prediction for corresponding output.
 }
 \examples{
 \donttest{
@@ -42,13 +29,13 @@ e = matrix(rnorm(n*q,0,0.1),n,q)
 y = x \%*\% t(beta) + e
 s2 = matrix(rep(0.1,q), q, 1)
 ## initialize parameters for EM algorithm 
-tol = 0.001
-maxit = 1000
 x_test = matrix(rnorm(n*p,0,1), n, p)
 ## set minimal variance estimation min_s2 = 0.1
-output = comte(y=y, x=x, S=beta, tol=tol, maxit, p, q, n, x_test, min_s2=0.1)
+output1 = comte(y=y, x=x, S=beta, min_s2=0.1)
+esty1 = predict_comte(output1, x_test)
 ## use distinct variance from multivariate linear regression models
-output = comte(y=y, x=x, S=cbind(beta,s2), tol=tol, maxit, p, q, n, x_test)
+output2 = comte(y=y, x=x, S=cbind(beta,s2))
+esty2 = predict_comte(output2, x_test)
 }
 
 }

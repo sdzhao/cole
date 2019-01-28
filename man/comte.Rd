@@ -13,22 +13,21 @@ comte(y, x, S, tol = 1e-06, maxit = 100000L, min_s2 = NULL)
 
 \item{S}{\eqn{d x L} matrix of support points. If \eqn{L = p + 1}, then the first p columns are \eqn{\beta}s and the last column is the corresponding residual error estimates. If \eqn{L = p}, then each column of S is a vector of \eqn{\beta}s and argument min_s2 is required. \eqn{d = q x g} where g is the number of groups of support points. Support points can be estimated by other methods that solve multivariate linear regression. Eg. LASSO from glmnet, CMR from camel.}
 
-\item{tol}{error tolerance for convergence of EM algorithm}
+\item{tol}{error tolerance for convergence of EM algorithm. Default value of tol is 1e-6.}
 
-\item{maxit}{maximum number of allowable iterations}
+\item{maxit}{maximum number of allowable iterations. Default value of maxit is 1e5.}
 
-\item{min_s2}{a positive number corresponds to minimal variance of estimated y. min_s2 is required when there are p columns in S}
-
-\item{newx}{a \eqn{m x p} matrix corresponds to testing data.}
+\item{min_s2}{a positive number corresponds to minimal variance of estimated y, min_s2 is required when there are p columns in S.}
 }
 \value{
-\item{f}{vector with \eqn{g x q} elements that describes the mixture of \eqn{\beta}s}
-\item{esty}{\eqn{m x q} matrix of estimated y based on newx}
+\item{f}{vector with \eqn{g x q} elements that describes the mixture of \eqn{\beta}s.}
+\item{A}{matrix with dimension \eqn{q x d}. A is an estimation of likelihood by EM algorithm and will be used in predicting.}
+\item{bs}{matrix with dimension \eqn{d x (p + 1)}. bs is support points used in updating prior distribution f. bs is equivalent to S when \eqn{L = p + 1} and will be used in predicting.}
 }
 \description{
 The function uses EM algorithm to solve multivariate linear regression problems 
 \deqn{Y = XB + \epsilon}
-both outcome \eqn{Y} and feature \eqn{X} are multi-dimensional. Users can set distinct residual estimations for different outcomes or set identical estimation for more robust results. Details can be found in \href{https://github.com/sdzhao/cole}{our paper}
+both outcome \eqn{Y} and feature \eqn{X} are multi-dimensional. Users can set distinct residual estimations for different outcomes or set identical estimation for more robust results. Details can be found in \href{https://github.com/sdzhao/cole}{our paper}.
 }
 \examples{
 \donttest{
@@ -42,13 +41,11 @@ e = matrix(rnorm(n*q,0,0.1),n,q)
 y = x \%*\% t(beta) + e
 s2 = matrix(rep(0.1,q), q, 1)
 ## initialize parameters for EM algorithm 
-tol = 0.001
-maxit = 1000
 x_test = matrix(rnorm(n*p,0,1), n, p)
 ## set minimal variance estimation min_s2 = 0.1
-output = comte(y=y, x=x, S=beta, tol=tol, maxit, p, q, n, x_test, min_s2=0.1)
+output1 = comte(y=y, x=x, S=beta, min_s2=0.1)
 ## use distinct variance from multivariate linear regression models
-output = comte(y=y, x=x, S=cbind(beta,s2), tol=tol, maxit, p, q, n, x_test)
+output2 = comte(y=y, x=x, S=cbind(beta,s2))
 }
 
 }
