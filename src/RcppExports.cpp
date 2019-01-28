@@ -22,3 +22,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// predict_comte
+arma::mat predict_comte(List comte_obj, arma::mat newx);
+RcppExport SEXP _cole_predict_comte(SEXP comte_objSEXP, SEXP newxSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type comte_obj(comte_objSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type newx(newxSEXP);
+    rcpp_result_gen = Rcpp::wrap(predict_comte(comte_obj, newx));
+    return rcpp_result_gen;
+END_RCPP
+}

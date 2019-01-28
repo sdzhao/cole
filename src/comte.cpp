@@ -67,8 +67,6 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 0.000001 , int ma
   arma::vec f = arma::ones(mp1) / mp1;
   int p = x.n_cols;
   int q = y.n_cols;
-  int n = y.n_rows;
-
 
   arma::mat B(mp1, p);
   arma::mat ss(mp1, 1);
@@ -92,13 +90,10 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 0.000001 , int ma
   arma::mat bs( mp1, p+1);
   bs = arma::join_rows(B,ss);
 
-  // //compute likelihood
+  //compute likelihood
   arma::mat ym = arma::repmat(y,1,mp1);
   arma::mat xbm = arma::kron(x * B.t(), arma::ones(1,q));
-  arma::mat ssm = arma::kron(ss.t(),arma::ones(1,q));
-  //arma::mat Avec = exp( (-arma::sum(pow((ym - xbm),2), 0))/(2*ssm))/pow(ssm, n/2) + pow(0.1,300);
-  arma::mat Avec = exp( (-arma::sum(pow((ym - xbm),2), 0))/(2*ssm) ) + pow(0.1,300);
-  arma::mat A = arma::reshape(Avec, q, mp1);
+  arma::mat A(q, mp1);
 
   //EM algorithm
   arma::mat ll;
@@ -112,36 +107,121 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 0.000001 , int ma
   double err = pow(10,10);
   arma::vec oldf;
   int tol_iter = 0;
-  for(int i = 0; i < maxit; i++){
-    tol_iter += 1;
-    oldf = f;
-    thres = 1/(A * oldf);
-    for(int j = 0; j < q; j++){
-      if( thres(j,0) > pow(10,300)){
-        thres(j,0) = pow(10,300);
+
+  if(p1 == p + 1){
+  	arma::mat ssm = arma::kron(ss.t(),arma::ones(1,q));
+  	arma::mat Avec = exp( (-arma::sum(pow((ym - xbm),2), 0))/(2*ssm) ) + pow(0.1,300);
+    A = arma::reshape(Avec, q, mp1);
+
+  	for(int i = 0; i < maxit; i++){
+      tol_iter += 1;
+      oldf = f;
+      thres = 1/(A * oldf);
+      for(int j = 0; j < q; j++){
+        if( thres(j,0) > pow(10,300)){
+          thres(j,0) = pow(10,300);
+        }
       }
-    }
 
 
-    f = A.t() * (thres) % oldf /q;
-    ll = sum(log(A * f));
-    oldll = sum(log(A * oldf));
-    diff = oldll - ll;
-    err = std::abs(diff(0,0)) / std::abs((oldll)(0,0));
-    if(err <= tol){
-      break;
+      f = A.t() * (thres) % oldf /q;
+      ll = sum(log(A * f));
+      oldll = sum(log(A * oldf));
+      diff = oldll - ll;
+      err = std::abs(diff(0,0)) / std::abs((oldll)(0,0));
+      if(err <= tol){
+        break;
+      }
+  	}
+  }else{
+  	arma::mat Avec = arma::sum(2*ym%xbm - xbm%xbm,0)/(2*ss(0,0));
+  	float maxA = Avec.max();
+  	Avec = exp(Avec / maxA);
+  	A = arma::reshape(Avec, q, mp1);
+
+  	for(int i = 0; i < maxit; i++){
+     tol_iter += 1;
+      oldf = f;
+      thres = 1/(A * oldf);
+      f = A.t() * (thres) % oldf /q;
+      ll = sum(log(A * f));
+      oldll = sum(log(A * oldf));
+      diff = oldll - ll;
+      err = abs(diff(0,0)) / abs((oldll)(0,0));
+      if(err <= tol){
+      	break;
+      }
     }
   }
 
-  // int n_new = newx.n_rows;
-  // arma::mat esty(n_new,q);
-  // arma::mat fmat = arma::repmat(f,1,q);
-  // arma::mat numeritor2 = (newx * bs.submat(0,0,mp1-1,p-1).t()) * (A%fmat.t()).t() ;
-  // arma::mat denomiator2 = arma::repmat(1/(A*f),1, n_new);
-  // esty = numeritor2 % denomiator2.t();
-
   return List::create(_["f"] = f, _["A"] = A, _["bs"] = bs);
 }
+
+
+//' Prediction
+//'
+//' The function uses EM algorithm to solve multivariate linear regression problems 
+//' \deqn{Y = XB + \epsilon}
+//' both outcome \eqn{Y} and feature \eqn{X} are multi-dimensional. Users can set distinct residual estimations for different outcomes or set identical estimation for more robust results. Details can be found in \href{https://github.com/sdzhao/cole}{our paper}
+//'
+//' @param y \eqn{n x q} matrix of outcomes for training.
+//' @param x \eqn{n x p} matrix of features for training. 
+//' @param S \eqn{d x L} matrix of support points. If \eqn{L = p + 1}, then the first p columns are \eqn{\beta}s and the last column is the corresponding residual error estimates. If \eqn{L = p}, then each column of S is a vector of \eqn{\beta}s and argument min_s2 is required. \eqn{d = q x g} where g is the number of groups of support points. Support points can be estimated by other methods that solve multivariate linear regression. Eg. LASSO from glmnet, CMR from camel.
+//' @param tol error tolerance for convergence of EM algorithm
+//' @param maxit maximum number of allowable iterations
+//' @param newx a \eqn{m x p} matrix corresponds to testing data.
+//' @param min_s2 a positive number corresponds to minimal variance of estimated y. min_s2 is required when there are p columns in S
+//'
+//' @return
+//' \item{f}{vector with \eqn{g x q} elements that describes the mixture of \eqn{\beta}s}
+//' \item{esty}{\eqn{m x q} matrix of estimated y based on newx}
+//'
+//' @examples
+//' \donttest{
+//' ## generate data
+//' p = 10
+//' q = 5
+//' n = 50
+//' x = matrix(rnorm(n*p,0,10), n, p)
+//' beta = matrix(rnorm(p*q,0,10), q, p)
+//' e = matrix(rnorm(n*q,0,0.1),n,q)
+//' y = x %*% t(beta) + e
+//' s2 = matrix(rep(0.1,q), q, 1)
+//' ## initialize parameters for EM algorithm 
+//' tol = 0.001
+//' maxit = 1000
+//' x_test = matrix(rnorm(n*p,0,1), n, p)
+//' ## set minimal variance estimation min_s2 = 0.1
+//' output = comte(y=y, x=x, S=beta, tol=tol, maxit, p, q, n, x_test, min_s2=0.1)
+//' ## use distinct variance from multivariate linear regression models
+//' output = comte(y=y, x=x, S=cbind(beta,s2), tol=tol, maxit, p, q, n, x_test)
+//' }
+//'
+//' @useDynLib cole
+//' @export
+// [[Rcpp::export]]
+arma::mat predict_comte(List comte_obj, arma::mat newx){
+  
+  arma::vec f = comte_obj["f"];
+  arma::mat A = comte_obj["A"];
+  arma::mat bs = comte_obj["bs"];
+  
+  int q = A.n_rows;
+  int mp1 = bs.n_rows;
+  int n_new = newx.n_rows;
+  int p = newx.n_cols;
+
+  arma::mat esty(n_new,q);
+  arma::mat fmat = arma::repmat(f,1,q);
+  arma::mat numeritor2 = (newx * bs.submat(0,0,mp1-1,p-1).t()) * (A%fmat.t()).t() ;
+  arma::mat denomiator2 = arma::repmat(1/(A*f),1, n_new);
+  esty = numeritor2 % denomiator2.t();
+
+  return esty;
+
+}
+
+
 
 
 
