@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // comte
-List comte(arma::mat y, arma::mat x, arma::mat S, double tol, int maxit, int p, int q, int n, arma::mat newx, Nullable<NumericVector> min_s2);
-RcppExport SEXP _cole_comte(SEXP ySEXP, SEXP xSEXP, SEXP SSEXP, SEXP tolSEXP, SEXP maxitSEXP, SEXP pSEXP, SEXP qSEXP, SEXP nSEXP, SEXP newxSEXP, SEXP min_s2SEXP) {
+List comte(arma::mat y, arma::mat x, arma::mat S, double tol, int maxit, Nullable<NumericVector> min_s2);
+RcppExport SEXP _cole_comte(SEXP ySEXP, SEXP xSEXP, SEXP SSEXP, SEXP tolSEXP, SEXP maxitSEXP, SEXP min_s2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -17,12 +17,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
-    Rcpp::traits::input_parameter< int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< int >::type q(qSEXP);
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type newx(newxSEXP);
     Rcpp::traits::input_parameter< Nullable<NumericVector> >::type min_s2(min_s2SEXP);
-    rcpp_result_gen = Rcpp::wrap(comte(y, x, S, tol, maxit, p, q, n, newx, min_s2));
+    rcpp_result_gen = Rcpp::wrap(comte(y, x, S, tol, maxit, min_s2));
     return rcpp_result_gen;
 END_RCPP
 }

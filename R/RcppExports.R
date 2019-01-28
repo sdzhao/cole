@@ -12,9 +12,6 @@
 #' @param S \eqn{d x L} matrix of support points. If \eqn{L = p + 1}, then the first p columns are \eqn{\beta}s and the last column is the corresponding residual error estimates. If \eqn{L = p}, then each column of S is a vector of \eqn{\beta}s and argument min_s2 is required. \eqn{d = q x g} where g is the number of groups of support points. Support points can be estimated by other methods that solve multivariate linear regression. Eg. LASSO from glmnet, CMR from camel.
 #' @param tol error tolerance for convergence of EM algorithm
 #' @param maxit maximum number of allowable iterations
-#' @param p number of features ( number of columns in x)
-#' @param q number of outcomes (number of columns in y)
-#' @param n number of observations in training data (number of rows in x and y)
 #' @param newx a \eqn{m x p} matrix corresponds to testing data.
 #' @param min_s2 a positive number corresponds to minimal variance of estimated y. min_s2 is required when there are p columns in S
 #'
@@ -45,7 +42,7 @@
 #'
 #' @useDynLib cole
 #' @export
-comte <- function(y, x, S, tol, maxit, p, q, n, newx, min_s2 = NULL) {
-    .Call('_cole_comte', PACKAGE = 'cole', y, x, S, tol, maxit, p, q, n, newx, min_s2)
+comte <- function(y, x, S, tol = 0.000001, maxit = 100000L, min_s2 = NULL) {
+    .Call('_cole_comte', PACKAGE = 'cole', y, x, S, tol, maxit, min_s2)
 }
 

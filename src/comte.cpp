@@ -29,9 +29,6 @@ using namespace Rcpp;
 //' @param S \eqn{d x L} matrix of support points. If \eqn{L = p + 1}, then the first p columns are \eqn{\beta}s and the last column is the corresponding residual error estimates. If \eqn{L = p}, then each column of S is a vector of \eqn{\beta}s and argument min_s2 is required. \eqn{d = q x g} where g is the number of groups of support points. Support points can be estimated by other methods that solve multivariate linear regression. Eg. LASSO from glmnet, CMR from camel.
 //' @param tol error tolerance for convergence of EM algorithm
 //' @param maxit maximum number of allowable iterations
-//' @param p number of features ( number of columns in x)
-//' @param q number of outcomes (number of columns in y)
-//' @param n number of observations in training data (number of rows in x and y)
 //' @param newx a \eqn{m x p} matrix corresponds to testing data.
 //' @param min_s2 a positive number corresponds to minimal variance of estimated y. min_s2 is required when there are p columns in S
 //'
@@ -63,11 +60,15 @@ using namespace Rcpp;
 //' @useDynLib cole
 //' @export
 // [[Rcpp::export]]
-List comte(arma::mat y, arma::mat x, arma::mat S, double tol , int maxit, int p, int q, int n, arma::mat newx, Nullable<NumericVector> min_s2 = R_NilValue){
+List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 0.000001 , int maxit = 100000, Nullable<NumericVector> min_s2 = R_NilValue){
 
   //initialization:
   int mp1 = S.n_rows; // g * q
   arma::vec f = arma::ones(mp1) / mp1;
+  int p = x.n_cols;
+  int q = y.n_cols;
+  int n = y.n_rows;
+
 
   arma::mat B(mp1, p);
   arma::mat ss(mp1, 1);
@@ -132,12 +133,15 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol , int maxit, int p,
     }
   }
 
-  int n_new = newx.n_rows;
-  arma::mat esty(n_new,q);
-  arma::mat fmat = arma::repmat(f,1,q);
-  arma::mat numeritor2 = (newx * bs.submat(0,0,mp1-1,p-1).t()) * (A%fmat.t()).t() ;
-  arma::mat denomiator2 = arma::repmat(1/(A*f),1, n_new);
-  esty = numeritor2 % denomiator2.t();
+  // int n_new = newx.n_rows;
+  // arma::mat esty(n_new,q);
+  // arma::mat fmat = arma::repmat(f,1,q);
+  // arma::mat numeritor2 = (newx * bs.submat(0,0,mp1-1,p-1).t()) * (A%fmat.t()).t() ;
+  // arma::mat denomiator2 = arma::repmat(1/(A*f),1, n_new);
+  // esty = numeritor2 % denomiator2.t();
 
-  return List::create(_["f"] = f, _["A"] = A, _["bs"] = bs, _["esty"] = esty, _["minA"] = A.min(),  _["maxA"] = A.max());
+  return List::create(_["f"] = f, _["A"] = A, _["bs"] = bs);
 }
+
+
+

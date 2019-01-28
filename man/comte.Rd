@@ -4,7 +4,7 @@
 \alias{comte}
 \title{Compound decision method for multivariate linear models}
 \usage{
-comte(y, x, S, tol, maxit, p, q, n, newx, min_s2 = NULL)
+comte(y, x, S, tol = 1e-06, maxit = 100000L, min_s2 = NULL)
 }
 \arguments{
 \item{y}{\eqn{n x q} matrix of outcomes for training.}
@@ -17,15 +17,9 @@ comte(y, x, S, tol, maxit, p, q, n, newx, min_s2 = NULL)
 
 \item{maxit}{maximum number of allowable iterations}
 
-\item{p}{number of features ( number of columns in x)}
-
-\item{q}{number of outcomes (number of columns in y)}
-
-\item{n}{number of observations in training data (number of rows in x and y)}
+\item{min_s2}{a positive number corresponds to minimal variance of estimated y. min_s2 is required when there are p columns in S}
 
 \item{newx}{a \eqn{m x p} matrix corresponds to testing data.}
-
-\item{min_s2}{a positive number corresponds to minimal variance of estimated y. min_s2 is required when there are p columns in S}
 }
 \value{
 \item{f}{vector with \eqn{g x q} elements that describes the mixture of \eqn{\beta}s}
