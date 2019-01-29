@@ -17,7 +17,6 @@
 
 using namespace Rcpp;
 
-
 //' Compound decision method for multivariate linear models
 //'
 //' The function uses EM algorithm to solve multivariate linear regression problems 
@@ -58,7 +57,16 @@ using namespace Rcpp;
 //' @useDynLib cole
 //' @export
 // [[Rcpp::export]]
-List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 0.000001 , int maxit = 100000, Nullable<NumericVector> min_s2 = R_NilValue){
+List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6 , 
+	int maxit = 1e+5, Nullable<NumericVector> min_s2 = R_NilValue, 
+	float cutoff = 1e-250, bool center = false, bool scale = false){
+
+  if(center){
+
+  }
+  if(scale){
+  
+  }
 
   //initialization:
   int mp1 = S.n_rows; // g * q
@@ -108,7 +116,7 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 0.000001 , int ma
 
   if(p1 == p + 1){
   	arma::mat ssm = arma::kron(ss.t(),arma::ones(1,q));
-  	arma::mat Avec = exp( (-arma::sum(pow((ym - xbm),2), 0))/(2*ssm) ) + pow(0.1,300);
+  	arma::mat Avec = exp( (-arma::sum(pow((ym - xbm),2), 0))/(2*ssm) ) + cutoff;
     A = arma::reshape(Avec, q, mp1);
 
   	for(int i = 0; i < maxit; i++){
@@ -116,8 +124,8 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 0.000001 , int ma
       oldf = f;
       thres = 1/(A * oldf);
       for(int j = 0; j < q; j++){
-        if( thres(j,0) > pow(10,300)){
-          thres(j,0) = pow(10,300);
+        if( thres(j,0) > cutoff){
+          thres(j,0) = cutoff;
         }
       }
 
