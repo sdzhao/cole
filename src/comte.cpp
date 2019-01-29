@@ -61,18 +61,25 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6 ,
 	int maxit = 1e+5, Nullable<NumericVector> min_s2 = R_NilValue, 
 	float cutoff = 1e-250, bool center = false, bool scale = false){
 
-  if(center){
-
-  }
-  if(scale){
-  
-  }
-
   //initialization:
   int mp1 = S.n_rows; // g * q
   arma::vec f = arma::ones(mp1) / mp1;
   int p = x.n_cols;
   int q = y.n_cols;
+  int n = y.n_rows;
+
+  if(center){
+  	arma::mat mean_x = repmat(mean(x), n, 1);
+  	arma::mat mean_y = repmat(mean(y), n, 1);
+  	x = x - mean_x;
+  	y = y - mean_y;
+  }
+  if(scale){
+  	arma::mat sd_x = repmat(stddev(x), n , 1);
+  	arma::mat sd_y = repmat(stddev(y), n , 1);
+  	x = x/sd_x;
+  	y = y/sd_y;
+  }
 
   arma::mat B(mp1, p);
   arma::mat ss(mp1, 1);
