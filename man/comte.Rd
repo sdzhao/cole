@@ -5,7 +5,7 @@
 \title{Compound decision method for multivariate linear models}
 \usage{
 comte(y, x, S, tol = 1e-06, maxit = 100000L, min_s2 = NULL,
-  cutoff = 1e-300, center = FALSE, scale = FALSE)
+  cutoff = 1e-250, center = FALSE, scale = FALSE)
 }
 \arguments{
 \item{y}{\eqn{n x q} matrix of outcomes for training.}
