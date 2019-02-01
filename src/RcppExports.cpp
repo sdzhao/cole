@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // comte
-List comte(arma::mat y, arma::mat x, arma::mat S, double tol, int maxit, Nullable<NumericVector> min_s2, float cutoff, bool center, bool scale);
-RcppExport SEXP _cole_comte(SEXP ySEXP, SEXP xSEXP, SEXP SSEXP, SEXP tolSEXP, SEXP maxitSEXP, SEXP min_s2SEXP, SEXP cutoffSEXP, SEXP centerSEXP, SEXP scaleSEXP) {
+List comte(arma::mat y, arma::mat x, arma::mat S, double tol, int maxit, Nullable<NumericVector> min_s2);
+RcppExport SEXP _cole_comte(SEXP ySEXP, SEXP xSEXP, SEXP SSEXP, SEXP tolSEXP, SEXP maxitSEXP, SEXP min_s2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,10 +18,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
     Rcpp::traits::input_parameter< Nullable<NumericVector> >::type min_s2(min_s2SEXP);
-    Rcpp::traits::input_parameter< float >::type cutoff(cutoffSEXP);
-    Rcpp::traits::input_parameter< bool >::type center(centerSEXP);
-    Rcpp::traits::input_parameter< bool >::type scale(scaleSEXP);
-    rcpp_result_gen = Rcpp::wrap(comte(y, x, S, tol, maxit, min_s2, cutoff, center, scale));
+    rcpp_result_gen = Rcpp::wrap(comte(y, x, S, tol, maxit, min_s2));
     return rcpp_result_gen;
 END_RCPP
 }

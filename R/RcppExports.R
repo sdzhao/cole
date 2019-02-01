@@ -13,7 +13,6 @@
 #' @param tol error tolerance for convergence of EM algorithm. Default value of tol is 1e-6.
 #' @param maxit maximum number of allowable iterations. Default value of maxit is 1e5.
 #' @param min_s2 a positive number corresponds to minimal variance of estimated y, min_s2 is required when there are p columns in S.
-#'
 #' @return
 #' \item{f}{vector with \eqn{g x q} elements that describes the mixture of \eqn{\beta}s.}
 #' \item{A}{matrix with dimension \eqn{q x d}. A is an estimation of likelihood by EM algorithm and will be used in predicting.}
@@ -40,8 +39,8 @@
 #'
 #' @useDynLib cole
 #' @export
-comte <- function(y, x, S, tol = 1e-6, maxit = 1e+5L, min_s2 = NULL, cutoff = 1e-250, center = FALSE, scale = FALSE) {
-    .Call('_cole_comte', PACKAGE = 'cole', y, x, S, tol, maxit, min_s2, cutoff, center, scale)
+comte <- function(y, x, S, tol = 1e-6, maxit = 1e5L, min_s2 = NULL) {
+    .Call('_cole_comte', PACKAGE = 'cole', y, x, S, tol, maxit, min_s2)
 }
 
 #' Predicting function for compound decision method 
