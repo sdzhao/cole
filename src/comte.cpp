@@ -57,7 +57,7 @@ using namespace Rcpp;
 //' @export
 // [[Rcpp::export]]
 List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit = 1e5, Nullable<NumericVector> min_s2 = R_NilValue, double cutoff = 0){
-  
+
   //initialization:
   int p = x.n_cols;
   int q = y.n_cols;
