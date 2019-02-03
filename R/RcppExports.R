@@ -39,8 +39,8 @@
 #'
 #' @useDynLib cole
 #' @export
-comte <- function(y, x, S, tol = 1e-6, maxit = 1e5L, min_s2 = NULL) {
-    .Call('_cole_comte', PACKAGE = 'cole', y, x, S, tol, maxit, min_s2)
+comte <- function(y, x, S, tol = 1e-6, maxit = 1e5L, min_s2 = NULL, cutoff = 0) {
+    .Call('_cole_comte', PACKAGE = 'cole', y, x, S, tol, maxit, min_s2, cutoff)
 }
 
 #' Predicting function for compound decision method 

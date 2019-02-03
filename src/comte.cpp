@@ -56,12 +56,13 @@ using namespace Rcpp;
 //' @useDynLib cole
 //' @export
 // [[Rcpp::export]]
-List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit = 1e5, Nullable<NumericVector> min_s2 = R_NilValue){
-  
+List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit = 1e5, Nullable<NumericVector> min_s2 = R_NilValue, double cutoff = 0){
+
   //initialization:
   int p = x.n_cols;
   int q = y.n_cols;
   int ps = S.n_cols;
+  int n = x.n_rows;
   int mp1 = S.n_rows; // g * q
   arma::vec f = arma::ones(mp1) / mp1;
 
@@ -74,13 +75,12 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit =
     arma::mat bs( mp1, p+1);
     bs = arma::join_rows(B,ss);
 
-    // //compute likelihood
-    arma::mat ym = arma::repmat(y,1,mp1);
-    arma::mat xbm = arma::kron(x * B.t(), arma::ones(1,q));
-    arma::mat ssm = arma::kron(ss.t(),arma::ones(1,q));
-    //arma::mat Avec = exp( (-arma::sum(pow((ym - xbm),2), 0))/(2*ssm))/pow(ssm, n/2) + pow(0.1,300);
-    arma::mat Avec = exp( (-arma::sum(pow((ym - xbm),2), 0))/(2*ssm) ) + pow(0.1,300);
-    arma::mat A = arma::reshape(Avec, q, mp1);
+    //compute likelihood
+    arma::mat A1 = arma::repmat(arma::sum(pow(y, 2),0).t(), 1, mp1);
+    arma::mat A2 = -2 * (x*B.t()).t() * y ;
+    arma::mat A3 = arma::repmat(arma::sum(pow(x*B.t(), 2), 0), q, 1);
+    arma::mat A4 = arma::repmat(ss.t(), q, 1);
+    arma::mat A = exp( (A1 + A2.t() + A3) /(-2*A4)) / pow(A4, int(n/2)) + cutoff; 
 
     //EM algorithm
     arma::mat ll; 
@@ -98,11 +98,11 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit =
       tol_iter += 1;
       oldf = f;
       thres = 1/(A * oldf);
-      for(int j = 0; j < q; j++){
-        if( thres(j,0) > pow(10,300)){
-          thres(j,0) = pow(10,300);
-        }
-      }
+      // for(int j = 0; j < q; j++){
+      //   if( thres(j,0) > pow(10,300)){
+      //     thres(j,0) = pow(10,300);
+      //   }
+      // }
 
 
       f = A.t() * (thres) % oldf /q;
