@@ -58,115 +58,118 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit = 1e5, Nullable<NumericVector> min_s2 = R_NilValue, double cutoff = 0){
   
-  //initialization:
-  int p = x.n_cols;
-  int q = y.n_cols;
-  int ps = S.n_cols;
-  int n = x.n_rows;
-  int mp1 = S.n_rows; // g * q
-  arma::vec f = arma::ones(mp1) / mp1;
+ 	//initialization:
+ 	int p = x.n_cols;
+ 	int q = y.n_cols;
+ 	int ps = S.n_cols;
+ 	int n = x.n_rows;
+  	int mp1 = S.n_rows; // g * q
+ 	arma::vec f = arma::ones(mp1) / mp1;
 
-  if(ps == p + 1){
-    arma::mat ss = S.submat(0,p,mp1-1,p);
-    arma::mat B = S.submat(0,0,mp1-1,p-1);
+ 	arma::mat A1;
+ 	arma::mat A2;
+ 	arma::mat A3;
+ 	arma::mat A;
 
-    //indices:
-
-    arma::mat bs( mp1, p+1);
-    bs = arma::join_rows(B,ss);
-
-    //compute likelihood
-    arma::mat A1 = arma::repmat(arma::sum(pow(y, 2),0).t(), 1, mp1);
-    arma::mat A2 = -2 * (x*B.t()).t() * y ;
-    arma::mat A3 = arma::repmat(arma::sum(pow(x*B.t(), 2), 0), q, 1);
-    arma::mat A4 = arma::repmat(ss.t(), q, 1);
-    arma::mat A = exp( (A1 + A2.t() + A3) /(-2*A4)) / pow(A4, int(n/2)) + cutoff; 
-
-    //EM algorithm
-    arma::mat ll; 
-    arma::mat oldll;
+ 	arma::mat ll; 
+  	arma::mat oldll;
     arma::mat diff;
     arma::mat thres;
-
-    arma::mat denomiator;
+    arma::vec oldf;
     arma::mat weight;
 
-    double err = pow(10,10);
-    arma::vec oldf;
-    int tol_iter = 0;
-    for(int i = 0; i < maxit; i++){
-      tol_iter += 1;
-      oldf = f;
-      thres = 1/(A * oldf);
-      // for(int j = 0; j < q; j++){
-      //   if( thres(j,0) > pow(10,300)){
-      //     thres(j,0) = pow(10,300);
-      //   }
-      // }
+    arma::mat numeritor;
+    arma::mat denomiator;
+    arma::mat fmat;
+    arma::mat b;
 
+    arma::mat ss(mp1, 1);
+    arma::mat B;
+    arma::mat bs;
 
-      f = A.t() * (thres) % oldf /q;
-      ll = sum(log(A * f));
-      oldll = sum(log(A * oldf));
-      diff = oldll - ll;
-      err = abs(diff(0,0)) / abs((oldll)(0,0));
-      if(err <= tol){
-        break;
-      }
-    }
+	arma::mat err(1,1);
+	err(0,0) = 100;
+	arma::mat tolmat(1,1);
+	tolmat(0,0) = tol;
 
-    return List::create(_["f"] = f, _["A"] = A, _["bs"] = bs);
-  }else if(ps == p){
-    if(min_s2.isNull()){
-      std::cout << "user defined minimum sigma squared is required" << std::endl;
-      return List::create(_["Error"] = 1);
-    }else{
-      arma::mat B = S;
-      NumericVector min_s2d(min_s2);
-      arma::mat ss(mp1, 1);
-      ss.fill(min_s2d(0));
+	int tol_iter;
 
-      arma::mat bs( mp1, p+1);
-      bs = arma::join_rows(B,ss);
+ 	if(ps == p + 1){
+ 		ss = S.submat(0,p,mp1-1,p);
+ 		B = S.submat(0,0,mp1-1,p-1);
+    	bs = arma::join_rows(B,ss);
 
-      //compute likelihood
-      arma::mat A1 = arma::repmat(arma::sum(pow(y, 2),0).t(), 1, mp1);
-      arma::mat A2 = -2 * (x*B.t()).t() * y ;
-      arma::mat A3 = arma::repmat(arma::sum(pow(x*B.t(), 2), 0), q, 1);
-      arma::mat A = exp( (A1 + A2.t() + A3) /(-2*ss(0,0))); 
+    	//compute likelihood
+    	A1 = arma::repmat(arma::sum(pow(y, 2),0).t(), 1, mp1);
+    	A2 = -2 * (x*B.t()).t() * y ;
+    	A3 = arma::repmat(arma::sum(pow(x*B.t(), 2), 0), q, 1);
+    	arma::mat A4 = arma::repmat(ss.t(), q, 1);
+    	A = exp( (A1 + A2.t() + A3) /(-2*A4)) / pow(A4, int(n/2)) + cutoff; 
 
-      //EM algorithm
-      arma::mat ll; 
-      arma::mat oldll;
-      arma::mat diff;
-      arma::mat thres;
+    	//EM algorithm
+    	tol_iter = 0;
+    	for(int i = 0; i < maxit; i++){
+    		tol_iter += 1;
+      		oldf = f;
+    		thres = 1/(A * oldf);
+    		f = A.t() * (thres) % oldf /q;
+    		ll = sum(log(A * f));
+    		oldll = sum(log(A * oldf));
+    		diff = ll - oldll ;
+    		err = abs(diff / oldll);
+    		if(err(0,0) <= tolmat(0,0)){
+    			break;
+    		}
 
-      arma::mat denomiator;
-      arma::mat weight;
+    	}
+		fmat = arma::repmat(f,1,q);
+  		numeritor = bs.submat(0,0,mp1-1,p-1).t() * (A%fmat.t()).t();
+  		denomiator = arma::repmat(1/(A*f),1, p);
+  		b = numeritor % denomiator.t();
 
-      double err = pow(10,10);
-      arma::vec oldf;
-      int tol_iter = 0;
-      for(int i = 0; i < maxit; i++){
-        tol_iter += 1;
-        oldf = f;
-        thres = 1/(A * oldf);
-        f = A.t() * (thres) % oldf /q;
-        ll = sum(log(A * f));
-        oldll = sum(log(A * oldf));
-        diff = oldll - ll;
-        err = abs(diff(0,0)) / abs((oldll)(0,0));
-        if(err <= tol){
-          break;
-        }
-      }
-      return List::create(_["f"] = f, _["A"] = A, _["bs"] = bs);
-    }
-  }else{
-    std::cout << "S has wrong dimension!" << std::endl;
-    return List::create(_["Error"] = 1);
-  }
+    	return List::create(_["f"] = f, _["A"] = A, _["bs"] = bs, _["b"] = b);
+  	}else if(ps == p){
+    	if(min_s2.isNull()){
+      		std::cout << "user defined minimum sigma squared is required" << std::endl;
+      		return List::create(_["Error"] = 1);
+    	}else{
+      		B = S;
+      		NumericVector min_s2d(min_s2);
+      		ss.fill(min_s2d(0));
+      		bs = arma::join_rows(B,ss);
 
+      		//compute likelihood
+      		A1 = arma::repmat(arma::sum(pow(y, 2),0).t(), 1, mp1);
+      		A2 = -2 * (x*B.t()).t() * y ;
+      		A3 = arma::repmat(arma::sum(pow(x*B.t(), 2), 0), q, 1);
+      		A = exp( (A1 + A2.t() + A3) /(-2*ss(0,0))); 
+
+      		//EM algorithm
+    		tol_iter = 0;
+    		for(int i = 0; i < maxit; i++){
+    			tol_iter += 1;
+      			oldf = f;
+    			thres = 1/(A * oldf);
+    			f = A.t() * (thres) % oldf /q;
+    			ll = sum(log(A * f));
+    			oldll = sum(log(A * oldf));
+    			diff = ll - oldll ;
+    			err = abs(diff/ oldll);
+
+    			if(err(0,0) <= tolmat(0,0)){
+    				break;
+    			}
+    		}
+	  		fmat = arma::repmat(f,1,q);
+  	  		numeritor = bs.submat(0,0,mp1-1,p-1).t() * (A%fmat.t()).t() ;
+  	  		denomiator = arma::repmat(1/(A*f),1, p);
+  	  		b = numeritor % denomiator.t();
+      		return List::create(_["f"] = f, _["A"] = A, _["bs"] = bs, _["b"] = b);
+    	}
+  	}else{
+    	std::cout << "S has wrong dimension!" << std::endl;
+    	return List::create(_["Error"] = 1);
+  	}
 }
 
 
