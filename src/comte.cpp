@@ -112,6 +112,11 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit =
     		tol_iter += 1;
       		oldf = f;
     		thres = 1/(A * oldf);
+    		for(int j = 0; j < q; j++){
+      			if( thres(j,0) > 1/cutoff){
+        		thres(j,0) = 1/cutoff;
+      			}
+    		}
     		f = A.t() * (thres) % oldf /q;
     		ll = sum(log(A * f));
     		oldll = sum(log(A * oldf));
