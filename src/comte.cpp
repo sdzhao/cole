@@ -56,7 +56,7 @@ using namespace Rcpp;
 //' @useDynLib cole
 //' @export
 // [[Rcpp::export]]
-List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit = 1e5, Nullable<NumericVector> min_s2 = R_NilValue, double cutoff = 0){
+List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit = 1e5, Nullable<NumericVector> min_s2 = R_NilValue, double scale = 1, double cutoff = 0){
   
  	//initialization:
  	int p = x.n_cols;
@@ -104,7 +104,9 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit =
     	A2 = -2 * (x*B.t()).t() * y ;
     	A3 = arma::repmat(arma::sum(pow(x*B.t(), 2), 0), q, 1);
     	arma::mat A4 = arma::repmat(ss.t(), q, 1);
-    	A = exp( (A1 + A2.t() + A3) /(-2*A4)) / pow(A4, int(n/2)) + cutoff; 
+    	A = exp( (A1 + A2.t() + A3) /(-2*A4)) / pow(A4, int(n/2)) * scale; 
+    	A.elem( find_nonfinite(A) ).zeros();
+    	A += cutoff;
 
     	//EM algorithm
     	tol_iter = 0;
@@ -142,7 +144,9 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit =
       		A1 = arma::repmat(arma::sum(pow(y, 2),0).t(), 1, mp1);
       		A2 = -2 * (x*B.t()).t() * y ;
       		A3 = arma::repmat(arma::sum(pow(x*B.t(), 2), 0), q, 1);
-      		A = exp( (A1 + A2.t() + A3) /(-2*ss(0,0))) + cutoff; 
+      		A = exp( (A1 + A2.t() + A3) /(-2*ss(0,0))) * scale; 
+      		A.elem( find_nonfinite(A) ).zeros();
+      		A += cutoff;
 
       		//EM algorithm
     		tol_iter = 0;
