@@ -142,7 +142,7 @@ List comte(arma::mat y, arma::mat x, arma::mat S, double tol = 1e-6, int maxit =
       		A1 = arma::repmat(arma::sum(pow(y, 2),0).t(), 1, mp1);
       		A2 = -2 * (x*B.t()).t() * y ;
       		A3 = arma::repmat(arma::sum(pow(x*B.t(), 2), 0), q, 1);
-      		A = exp( (A1 + A2.t() + A3) /(-2*ss(0,0))); 
+      		A = exp( (A1 + A2.t() + A3) /(-2*ss(0,0))) + cutoff; 
 
       		//EM algorithm
     		tol_iter = 0;
