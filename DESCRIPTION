@@ -2,11 +2,13 @@ Package: cole
 Title: COmpound Loss Emporium
 Version: 1.1.0
 Authors@R: person("Dave", "Zhao", email = "dave.zhao@gmail.com", role = c("aut", "cre"))
-Description: Procedures for minimizing various compound loss functions, e.g. squared error loss for the simultaneous estimation of normal means.
+Description: Procedures for minimizing various compound loss functions, 
+    e.g. squared error loss for the simultaneous estimation of normal means.
 Depends: R (>= 3.4.0)
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.1
+Roxygen: list(markdown = TRUE)
 Imports: Rcpp (>= 1.0.0)
 LinkingTo: Rcpp, RcppArmadillo 

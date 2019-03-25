@@ -1,7 +1,7 @@
 #' Gaussian mean estimation with Gaussian side information
 #'
 #' Estimates the mean vector of a primary homoscedastic sequence of independent Gaussian observations under squared error loss by leveraging side information in the form of an auxiliary homoscedastic sequence of independent Gaussians.
-#' 
+#'
 #'
 #' @param x1 primary Gaussian sequence
 #' @param s1 standard deviation of primary sequence
@@ -32,49 +32,53 @@
 #' ## loss of estimator incorporating side information
 #' mean((theta1 - gg(x1, 1, x2, 1)$theta_hat)^2)
 #' }
-#'
+#' 
 #' @useDynLib cole
 #' @export
 
 gg = function(x1, s1, x2, s2, rho = 0,
-              K = 10, C = 5,
-              tol = 1e-5, maxit = 100) {
-    ## error checking
-    if (length(x1) != length(x2)) {
-        stop("x1 and x2 must be the same length")
-    }
-    if (length(s1) != 1 || length(s2) != 1) {
-        stop("s1 and s2 must be scalar")
-    }
-    if (rho < 0) {
-        stop("rho must be positive")
-    }
-    
-    ## minimize sure
-    tmp = .Call("gg_min_sure",
-                as.numeric(x1), as.numeric(s1),
-                as.numeric(x2), as.numeric(s2),
-                as.numeric(rho),
-                as.integer(K), as.numeric(C),
-                as.numeric(tol), as.integer(maxit))
-    
-    ## report results
-    n = length(x1)
-    t1_hat = tmp[1:n]
-    t2_hat = tmp[(n + 1) : (2 * n)]
-    theta_hat = .Call("gg_rule",
-                      as.numeric(x1), as.numeric(s1),
-                      as.numeric(x2), as.numeric(s2),
-                      as.numeric(t1_hat), as.numeric(t2_hat),
-                      as.numeric(rho))
+               K = 10, C = 5,
+               tol = 1e-5, maxit = 100) {
+  ## error checking
+  if (length(x1) != length(x2)) {
+    stop("x1 and x2 must be the same length")
+  }
+  if (length(s1) != 1 || length(s2) != 1) {
+    stop("s1 and s2 must be scalar")
+  }
+  if (rho < 0) {
+    stop("rho must be positive")
+  }
 
-    return(list(t1_hat = t1_hat, t2_hat = t2_hat, theta_hat = theta_hat))
+  ## minimize sure
+  tmp = .Call(
+    "gg_min_sure",
+    as.numeric(x1), as.numeric(s1),
+    as.numeric(x2), as.numeric(s2),
+    as.numeric(rho),
+    as.integer(K), as.numeric(C),
+    as.numeric(tol), as.integer(maxit)
+  )
+
+  ## report results
+  n = length(x1)
+  t1_hat = tmp[1:n]
+  t2_hat = tmp[(n + 1):(2 * n)]
+  theta_hat = .Call(
+    "gg_rule",
+    as.numeric(x1), as.numeric(s1),
+    as.numeric(x2), as.numeric(s2),
+    as.numeric(t1_hat), as.numeric(t2_hat),
+    as.numeric(rho)
+  )
+
+  return(list(t1_hat = t1_hat, t2_hat = t2_hat, theta_hat = theta_hat))
 }
 
 #' Separable rule for Gaussian mean estimation with Gaussian side information
 #'
 #' Given tuning parameter vectors t1 and t2, returns corresponding estimate for the mean vector of a primary homoscedastic sequence of independent Gaussian observations that leverages side information in the form of an auxiliary homoscedastic sequence of independent Gaussians.
-#' 
+#'
 #'
 #' @param x1 primary Gaussian sequence
 #' @param s1 standard deviation of primary sequence
@@ -99,25 +103,26 @@ gg = function(x1, s1, x2, s2, rho = 0,
 #' mean((theta1 - x1)^2)
 #' ## loss of oracle separable estimator
 #' mean((theta1 - gg_rule(x1, 1, x2, 1, theta1, theta2)$theta_hat)^2)
-#'
 #' @useDynLib cole
 #' @export
 
 gg_rule = function(x1, s1, x2, s2, t1, t2, rho = 0) {
-    ## error checking
-    if (length(x1) != length(x2)) {
-        stop("x1 and x2 must be the same length")
-    }
-    if (length(s1) != 1 || length(s2) != 1) {
-        stop("s1 and s2 must be scalar")
-    }
-    if(length(x1) != length(t1) || length(x2) != length(t2)){
-        stop("x1/x2 and t1/t2 must be the same length")
-    }
-    
-    ret = .Call("gg_rule",
-                as.numeric(x1), as.numeric(s1),
-                as.numeric(x2), as.numeric(s2),
-                as.numeric(t1), as.numeric(t2), as.numeric(rho))
-    return(list(theta_hat = ret))
+  ## error checking
+  if (length(x1) != length(x2)) {
+    stop("x1 and x2 must be the same length")
+  }
+  if (length(s1) != 1 || length(s2) != 1) {
+    stop("s1 and s2 must be scalar")
+  }
+  if (length(x1) != length(t1) || length(x2) != length(t2)) {
+    stop("x1/x2 and t1/t2 must be the same length")
+  }
+
+  ret = .Call(
+    "gg_rule",
+    as.numeric(x1), as.numeric(s1),
+    as.numeric(x2), as.numeric(s2),
+    as.numeric(t1), as.numeric(t2), as.numeric(rho)
+  )
+  return(list(theta_hat = ret))
 }

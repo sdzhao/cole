@@ -7,15 +7,19 @@
 predict_comte(comte_obj, newx)
 }
 \arguments{
-\item{comte_obj}{returned object from comte function that contains important information for predicting.}
+\item{comte_obj}{returned object from comte function that contains
+important information for predicting.}
 
 \item{newx}{\eqn{m x p} matrix corresponds to testing data.}
 }
 \value{
-\item{esty}{\eqn{m x q} matrix of estimated y based on newx. }
+\itemize{
+\item \code{esty}: \eqn{m x q} matrix of estimated y based on newx.
+}
 }
 \description{
-The function takes returned object from comte and testing data as input. Return value is the prediction for corresponding output.
+The function takes returned object from comte and testing data as input.
+Return value is the prediction for corresponding output.
 }
 \examples{
 \donttest{
@@ -28,7 +32,7 @@ beta = matrix(rnorm(p*q,0,10), q, p)
 e = matrix(rnorm(n*q,0,0.1),n,q)
 y = x \%*\% t(beta) + e
 s2 = matrix(rep(0.1,q), q, 1)
-## initialize parameters for EM algorithm 
+## initialize parameters for EM algorithm
 x_test = matrix(rnorm(n*p,0,1), n, p)
 ## set minimal variance estimation min_s2 = 0.1
 output1 = comte(y=y, x=x, S=beta, min_s2=0.1)
