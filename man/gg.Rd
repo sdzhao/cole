@@ -18,7 +18,7 @@ gg(x1, s1, x2, s2, rho = 0, K = 10, C = 5, tol = 1e-05,
 
 \item{rho}{regularization parameter, closer to 0 means less regularization}
 
-\item{K}{number of grid points, in the interval [x_j1 - C s_1, x_j1 + C s1], over which to search for the jth tuning parameter, where C is define below}
+\item{K}{number of grid points, in the interval \link{x_j1 - C s_1, x_j1 + C s1}, over which to search for the jth tuning parameter, where C is define below}
 
 \item{C}{the value of the constant C in the interval above}
 
