@@ -22,7 +22,7 @@ using namespace Rcpp;
 //'               \eqn{d = q x g} where g is the number of groups of
 //'               support points. Support points can be estimated by
 //'               other methods that solve multivariate linear regression.
-//'               Eg. LASSO from glmnet, CMR from camel.
+//'               Eg. LASSO from glmnet.
 //' @param tol    error tolerance for convergence of EM algorithm.
 //'               Default value of tol is 1e-6.
 //' @param maxit  maximum number of allowable iterations.

@@ -39,5 +39,4 @@ x2 = theta2 + rnorm(n)
 mean((theta1 - x1)^2)
 ## loss of oracle separable estimator
 mean((theta1 - gg_rule(x1, 1, x2, 1, theta1, theta2)$theta_hat)^2)
-
 }

@@ -38,5 +38,4 @@ x1 = theta1 + rnorm(n)
 mean((theta1 - x1)^2)
 ## loss of GMLEB
 mean((theta1 - gmleb(x1, 1)$theta_hat)^2)
-
 }
