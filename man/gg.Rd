@@ -4,8 +4,8 @@
 \alias{gg}
 \title{Gaussian mean estimation with Gaussian side information}
 \usage{
-gg(x1, s1, x2, s2, rho = 0, K = 10, C = 5, tol = 1e-05,
-  maxit = 100)
+gg(x1, s1, x2, s2, rho = 0, K = 10, C = 5, fast = TRUE,
+  tol = 1e-05, maxit = 100, verbose = FALSE)
 }
 \arguments{
 \item{x1}{primary Gaussian sequence}
@@ -18,13 +18,17 @@ gg(x1, s1, x2, s2, rho = 0, K = 10, C = 5, tol = 1e-05,
 
 \item{rho}{regularization parameter, closer to 0 means less regularization}
 
-\item{K}{number of grid points, in the interval \link{x_j1 - C s_1, x_j1 + C s1}, over which to search for the jth tuning parameter, where C is define below}
+\item{K}{number of grid points, in the interval [x_j1 - C s_1, x_j1 + C s1], over which to search for the jth tuning parameter, where C is define below}
 
 \item{C}{the value of the constant C in the interval above}
+
+\item{fast}{if TRUE, use the fast algorithm (may be numerically unstable if rho = 0)}
 
 \item{tol}{error tolerance for convergence of the unbiased risk estimate}
 
 \item{maxit}{maximum number of allowable iterations}
+
+\item{verbose}{should the value of SURE be reported at each iteration}
 }
 \value{
 \item{t1_hat}{values of tuning parameters t1}
@@ -32,7 +36,7 @@ gg(x1, s1, x2, s2, rho = 0, K = 10, C = 5, tol = 1e-05,
 \item{theta_hat}{estimated values of means of primary Gaussian sequence}
 }
 \description{
-Estimates the mean vector of a primary homoscedastic sequence of independent Gaussian observations under squared error loss by leveraging side information in the form of an auxiliary homoscedastic sequence of independent Gaussians.
+Estimates the mean vector of a primary homoscedastic sequence of independent Gaussian observations under squared error loss by leveraging side information in the form of an auxiliary homoscedastic sequence of independent Gaussians. The optimal decision rule is estimated by directly minimizing an unbiased estimate of its risk.
 }
 \examples{
 \donttest{

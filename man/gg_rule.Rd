@@ -4,7 +4,7 @@
 \alias{gg_rule}
 \title{Separable rule for Gaussian mean estimation with Gaussian side information}
 \usage{
-gg_rule(x1, s1, x2, s2, t1, t2, rho = 0)
+gg_rule(x1, s1, x2, s2, t1, t2, r = 0, rho = 0)
 }
 \arguments{
 \item{x1}{primary Gaussian sequence}
@@ -19,10 +19,12 @@ gg_rule(x1, s1, x2, s2, t1, t2, rho = 0)
 
 \item{t2}{tuning parameter vector t2}
 
+\item{r}{correlation between x_i1 and x_i2, assuming they are bivariate normal}
+
 \item{rho}{regularization parameter, closer to 0 means less regularization}
 }
 \value{
-\item{theta_hat}{estimated values of means of primary Gaussian sequence}
+estimated values of means of primary Gaussian sequence
 }
 \description{
 Given tuning parameter vectors t1 and t2, returns corresponding estimate for the mean vector of a primary homoscedastic sequence of independent Gaussian observations that leverages side information in the form of an auxiliary homoscedastic sequence of independent Gaussians.
@@ -38,5 +40,5 @@ x2 = theta2 + rnorm(n)
 ## loss of MLE
 mean((theta1 - x1)^2)
 ## loss of oracle separable estimator
-mean((theta1 - gg_rule(x1, 1, x2, 1, theta1, theta2)$theta_hat)^2)
+mean((theta1 - gg_rule(x1, 1, x2, 1, theta1, theta2))^2)
 }
