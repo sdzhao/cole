@@ -22,7 +22,7 @@ then
 elif [[ $ACTION = 'r' ]];
 then
     echo "Running R"
-    docker run --rm -p 8787:8787 -e PASSWORD=cole $IMAGE
+    docker run -v $(pwd)/local:/home --rm -p 8787:8787 -e PASSWORD=cole $IMAGE
 else
     echo "Usage: cole.sh [build/r]"
 fi
