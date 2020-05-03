@@ -4,8 +4,7 @@
 \alias{g}
 \title{Gaussian mean estimation}
 \usage{
-g(x, s, rho = 0, K = 10, C = 5, tol = 1e-05, maxit = 100,
-  verbose = FALSE)
+g(x, s, rho = 0, K = 10, C = 5, tol = 1e-05, maxit = 100, verbose = FALSE)
 }
 \arguments{
 \item{x}{Gaussian sequence}

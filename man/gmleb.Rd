@@ -4,8 +4,7 @@
 \alias{gmleb}
 \title{General maximum likelihood empirical Bayes estimator of Jiang and Zhang (2009)}
 \usage{
-gmleb(x1, s1, init = NULL, grid = NULL, M = 300, tol = 1e-05,
-  maxit = 1000)
+gmleb(x1, s1, init = NULL, grid = NULL, M = 300, tol = 1e-05, maxit = 1000)
 }
 \arguments{
 \item{x1}{Gaussian sequence}

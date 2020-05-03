@@ -4,8 +4,17 @@
 \alias{cdlm}
 \title{Linear model for compound decision problems}
 \usage{
-cdlm(Y, s2, C = NULL, CY, CN = NULL, N = NULL, k3 = NULL,
-  k4 = NULL, penalty = NULL)
+cdlm(
+  Y,
+  s2,
+  C = NULL,
+  CY,
+  CN = NULL,
+  N = NULL,
+  k3 = NULL,
+  k4 = NULL,
+  penalty = NULL
+)
 }
 \arguments{
 \item{Y}{observed data (n x 1)}

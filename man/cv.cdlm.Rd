@@ -4,8 +4,20 @@
 \alias{cv.cdlm}
 \title{Cross validation for penalized linear model for compound decision problems}
 \usage{
-cv.cdlm(Y, s2, C, CY, CN = NULL, N = NULL, Lp = 1, nfolds = 2,
-  M.min = 0, M.max = 5, nM = 11, verbose = FALSE)
+cv.cdlm(
+  Y,
+  s2,
+  C,
+  CY,
+  CN = NULL,
+  N = NULL,
+  Lp = 1,
+  nfolds = 2,
+  M.min = 0,
+  M.max = 5,
+  nM = 11,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{Y}{observed data (n x 1)}
