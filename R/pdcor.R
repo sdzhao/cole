@@ -10,22 +10,22 @@
 #' definite covariance matrix in multivariate data analysis." Journal of Multivariate Analysis 157 
 #' (2017): 45-52. 
 #' 
-#'  @param Sigma    matrix for calibration
-#'  @param d        number of proposed smallest positive eigenvalues
-#'  
-#'  @return         calibrated positive definite matrix
-#'  
-#'  @examples 
-#'  p=10
-#'  set.seed(1)
-#'  mat = matrix(runif(p^2),p,p)
-#'  mat = mat + t(mat)
-#'  diag(mat) = 4
-#'  print(eigen(mat)$values)
-#'  mat1 = posdef.correction(mat,d=20)
-#'  print(eigen(mat1)$values)
-#'  
-#'  @export
+#' @param Sigma    matrix for calibration
+#' @param d        number of proposed smallest positive eigenvalues
+#' 
+#' @return         calibrated positive definite matrix
+#' 
+#' @examples 
+#' p=10
+#' set.seed(1)
+#' mat = matrix(runif(p^2),p,p)
+#' mat = mat + t(mat)
+#' diag(mat) = 4
+#' print(eigen(mat)$values)
+#' mat1 = posdef.correction(mat,d=20)
+#' print(eigen(mat1)$values)
+#' 
+#' @export
 
 posdef.correction = function(Sigma, d)
 {
