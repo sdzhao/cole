@@ -206,17 +206,7 @@ cdlm = function(Y, s2,
         objective = Minimize(2 * sum(Z * vars) + sum((Y - X %*% vars)^2))
         constraint = list(p_norm(vars, penalty[1]) <= penalty[2])
         problem = Problem(objective, constraint)
-        ## result = solve(problem)
-
-        ## directly call solver because problem is convex
-        prob_data = get_problem_data(problem, solver = "ECOS")
-        solver_output = ECOSolveR::ECOS_csolve(c = prob_data[["c"]],
-                                               G = prob_data[["G"]],
-                                               h = prob_data[["h"]],
-                                               dims = prob_data[["dims"]],
-                                               A = prob_data[["A"]],
-                                               b = prob_data[["b"]])
-        result = unpack_results(problem, "ECOS", solver_output)
+        result = solve(problem)
         
         b = result$getValue(vars)
         S = NA

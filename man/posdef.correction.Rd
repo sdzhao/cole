@@ -6,6 +6,15 @@
 \usage{
 posdef.correction(Sigma, d)
 }
+\arguments{
+\item{Sigma}{matrix for calibration}
+
+\item{d}{number of proposed smallest positive eigenvalues}
+}
+\value{
+\preformatted{    calibrated positive definite matrix
+}
+}
 \description{
 This function is used to find an optimal positive definite matrix for a given symmetric matrix. First,
 it proposes a d-length sequence of exponent parameters, which constructs the candidates of smallest
@@ -17,13 +26,8 @@ from Huang & Chao's paper (2017).
 Reference: Huang, Chao, Daniel Farewell, and Jianxin Pan. "A calibration method for non-positive
 definite covariance matrix in multivariate data analysis." Journal of Multivariate Analysis 157
 (2017): 45-52.
-
-@param Sigma    matrix for calibration
-@param d        number of proposed smallest positive eigenvalues
-
-@return         calibrated positive definite matrix
-
-@examples
+}
+\examples{
 p=10
 set.seed(1)
 mat = matrix(runif(p^2),p,p)
@@ -33,5 +37,4 @@ print(eigen(mat)$values)
 mat1 = posdef.correction(mat,d=20)
 print(eigen(mat1)$values)
 
-@export
 }

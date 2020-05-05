@@ -4,7 +4,7 @@
 \alias{msg}
 \title{Matrix shrinkage by g-modeling method}
 \usage{
-msg(X, d = 10L, centered = FALSE, maxit = 200L, tol = 0.0001, verbose = FALSE)
+msg(X, d = 10L, centered = FALSE, maxit = 200L, tol = 1e-04, verbose = FALSE)
 }
 \arguments{
 \item{X}{\eqn{n x p} matrix of data generated from p-variate multivariate normal distribution}
