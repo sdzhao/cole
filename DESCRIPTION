@@ -1,6 +1,6 @@
 Package: cole
 Title: COmpound Loss Emporium
-Version: 1.3.0
+Version: 1.4.0
 Authors@R: c(
   person("Dave", "Zhao", email = "dave.zhao@gmail.com", role = c("aut", "cre")),
   person("Yihe", "Wang", email = "ywang426@illinois.edu", role = c("aut")),
@@ -13,5 +13,5 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.0.9000
 Roxygen: list(markdown = TRUE)
-Imports: Rcpp (>= 1.0.0), RcppArmadillo, glmnet, CVXR, ECOSolveR
+Imports: Rcpp (>= 1.0.0), RcppArmadillo, glmnet, CVXR, ECOSolveR, quadprog
 LinkingTo: Rcpp, RcppArmadillo 
