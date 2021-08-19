@@ -122,11 +122,11 @@ coolish_con = function(x_tr,
       Z = Z[, index_nonzero]
       L = L[index_nonzero]
     }
-    p = ncol(Z) - 2
+    Z_p = ncol(Z) - 2
     Dmat = 2 * crossprod(Z) /q
     dvec = as.numeric(2 * (y_ols[j,] %*% Z - L)/q)
-    Amat = diag(1, p+2)[, 2:(p+2)]
-    bvec = rep(0, p+1)
+    Amat = diag(1, Z_p+2)[, 2:(Z_p+2)]
+    bvec = rep(0, Z_p+1)
     
     qpres = solve.QP(Dmat = Dmat, dvec = dvec, Amat = Amat, bvec = bvec)
     a = qpres$solution
