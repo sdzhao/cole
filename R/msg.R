@@ -1,6 +1,6 @@
 #' A Compound Decision Approach to Covariance Matrix Estimation
 #'
-#' Estimates covariance matrix for data from Gaussian distributino
+#' Estimates covariance matrix for data from Gaussian distribution
 #'
 #'
 #' @param X n x p data matrix, each column is a feature
@@ -20,7 +20,7 @@
 #' set.seed(1)
 #' sigma.x = matrix(0.9,p,p)
 #' diag(sigma.x) = 1
-#' X = mvrnorm(n,sigma.x)
+#' X = MASS::mvrnorm(n,rep(0,p),sigma.x)
 #' ## loss of msg
 #' norm(sigma.x - msg(X,K=p),'f')
 #' @useDynLib cole
