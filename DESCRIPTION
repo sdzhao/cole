@@ -4,7 +4,8 @@ Version: 1.4.0
 Authors@R: c(
   person("Dave", "Zhao", email = "dave.zhao@gmail.com", role = c("aut", "cre")),
   person("Yihe", "Wang", email = "ywang426@illinois.edu", role = c("aut")),
-  person("Huiqin", "Xin", email = "huiqinx2@illinois.edu", role = c("aut")))
+  person("Huiqin", "Xin", email = "huiqinx2@illinois.edu", role = c("aut")),
+  person("Alton", "Barbehenn", email = "barbehe2@illinois.edu", role = c("aut")))
 Description: Procedures for minimizing various compound loss functions, 
     e.g. squared error loss for the simultaneous estimation of normal means.
 Depends: R (>= 3.4.0)
@@ -14,4 +15,5 @@ LazyData: true
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Imports: Rcpp (>= 1.0.0), RcppArmadillo, glmnet, CVXR, ECOSolveR, quadprog, stats
+Suggests: Rmosek
 LinkingTo: Rcpp, RcppArmadillo 

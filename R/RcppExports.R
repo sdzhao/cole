@@ -103,50 +103,48 @@ predict_comte <- function(comte_obj, newx) {
     .Call('_cole_predict_comte', PACKAGE = 'cole', comte_obj, newx)
 }
 
-rep_time <- function(s, times) {
-    .Call('_cole_rep_time', PACKAGE = 'cole', s, times)
-}
-
-rep_each <- function(s, each) {
-    .Call('_cole_rep_each', PACKAGE = 'cole', s, each)
-}
-
-npmle_c <- function(D, maxit = 200L, tol = 0.0001, verbose = FALSE) {
-    .Call('_cole_npmle_c', PACKAGE = 'cole', D, maxit, tol, verbose)
-}
-
-#' Matrix shrinkage by g-modeling method
-#' 
-#' The function use shrinkage method to estimate covariance matrix with given multinormal data. 
-#' This method applies empirical method and approximate the optimal separable decision rule by
-#' EM algorithm.
-#' 
-#' @param X          \eqn{n x p} matrix of data generated from p-variate multivariate normal distribution
-#' @param d          interger. It controls the number of support points. Default value is 10.
-#' @param centered   bool. Whether X has been centered. If center=false, it is known that the multivariate
-#'                   distribution has mean of zeros. Otherwise means are unknown. Default value is false.
-#' @param maxit      maximum number of allowable iterations. Default value is 200.
-#' @param tol        error tolerance for convergence of EM algorithm. Default value is 1e-04.
-#' @param verbose    bool. Whether print out error information during EM iteration. Default value is false.
-#' @return 
-#' 
-#' - `est_cov`: \eqn{p x p} matrix of estiamted covariance matrix.
-#' 
+#' Least-Squares Pooled Adjacent Violators Algorithm
+#'
+#' An implementation of the pooled adjacent violators algorithm for
+#' minimizing the least squares loss subject to the monotonicity
+#' (non-decreasing) constraint.
+#'
+#' It is assumed that `y` is ordered corresponding to the correct indices for
+#' a monotone non-decreasing fit. If a monotone non-increasing fit is desired
+#' use `base::rev()` as in the examples.
+#'
+#' The basic idea is to start by partitioning the data into singletons (zero
+#' least squares loss), then merge neighboring sets if the monotone
+#' non-decreasing constraint is violated. The value a set takes is the average
+#' of its elements, this is implemented by tracking set cardinality and
+#' the current mean so that the merger of two sets is just a weighted sum.
+#'
+#' This algorithm has time complexity O(n). However, this implementation may
+#' have worse complexity because of the way we are removing elements in a
+#' vector during the merge.
+#'
+#' @param y numeric vector of observations corresponding to a sorted,
+#' increasing predictor
+#' @return a  numeric vector of fitted values corresponding to y
 #' @examples
-#' \donttest{
-#' ## set parameters
-#' p = 10
-#' d = 20
-#' n = 100
-#' ## generate multivariate normal data X, with mean of zeros and identity matrix as covariance matrix.
-#' X = matrix(rnorm(n*p,0,1), n, p)
-#' ## estimate covariance with given data X
-#' cov = msg(X=X, d=d)
-#' }
-#' 
+#' # non-decreasing example
+#' set.seed(1)
+#' y <- atan(seq(from = -5, to = 5, length.out = 51)) + rnorm(51, sd = 0.2)
+#' y.hat <- pava_ls(y) # not exported
+#' plot(y)
+#' points(y.hat, col = "red")
+#'
+#' #non-increasing example
+#' set.seed(1)
+#' y <- -atan(seq(from = -5, to = 5, length.out = 51)) + rnorm(51, sd = 0.2)
+#' y.hat <- rev(pava_ls(rev(y)))
+#' plot(y)
+#' points(y.hat, col = "red")
+#'
 #' @useDynLib cole
+#' @importFrom Rcpp evalCpp
 #' @export
-msg <- function(X, d = 10L, centered = FALSE, maxit = 200L, tol = 0.0001, verbose = FALSE) {
-    .Call('_cole_msg', PACKAGE = 'cole', X, d, centered, maxit, tol, verbose)
+pava_ls <- function(y) {
+    .Call('_cole_pava_ls', PACKAGE = 'cole', y)
 }
 
