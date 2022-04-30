@@ -1,6 +1,6 @@
 Package: cole
 Title: COmpound Loss Emporium
-Version: 1.4.0
+Version: 1.5.0
 Authors@R: c(
   person("Dave", "Zhao", email = "dave.zhao@gmail.com", role = c("aut", "cre")),
   person("Yihe", "Wang", email = "ywang426@illinois.edu", role = c("aut")),
