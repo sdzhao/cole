@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // comte
 List comte(arma::mat y, arma::mat x, arma::mat S, double tol, int maxit, Nullable<NumericVector> min_s2, double scale, double cutoff);
 RcppExport SEXP _cole_comte(SEXP ySEXP, SEXP xSEXP, SEXP SSEXP, SEXP tolSEXP, SEXP maxitSEXP, SEXP min_s2SEXP, SEXP scaleSEXP, SEXP cutoffSEXP) {
@@ -36,57 +41,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// rep_time
-arma::vec rep_time(arma::vec s, int times);
-RcppExport SEXP _cole_rep_time(SEXP sSEXP, SEXP timesSEXP) {
+// pava_ls
+NumericVector pava_ls(NumericVector y);
+RcppExport SEXP _cole_pava_ls(SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type s(sSEXP);
-    Rcpp::traits::input_parameter< int >::type times(timesSEXP);
-    rcpp_result_gen = Rcpp::wrap(rep_time(s, times));
-    return rcpp_result_gen;
-END_RCPP
-}
-// rep_each
-arma::vec rep_each(arma::vec s, int each);
-RcppExport SEXP _cole_rep_each(SEXP sSEXP, SEXP eachSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type s(sSEXP);
-    Rcpp::traits::input_parameter< int >::type each(eachSEXP);
-    rcpp_result_gen = Rcpp::wrap(rep_each(s, each));
-    return rcpp_result_gen;
-END_RCPP
-}
-// npmle_c
-arma::vec npmle_c(arma::mat D, int maxit, double tol, bool verbose);
-RcppExport SEXP _cole_npmle_c(SEXP DSEXP, SEXP maxitSEXP, SEXP tolSEXP, SEXP verboseSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type D(DSEXP);
-    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
-    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(npmle_c(D, maxit, tol, verbose));
-    return rcpp_result_gen;
-END_RCPP
-}
-// msg
-arma::mat msg(arma::mat X, int d, bool centered, int maxit, double tol, bool verbose);
-RcppExport SEXP _cole_msg(SEXP XSEXP, SEXP dSEXP, SEXP centeredSEXP, SEXP maxitSEXP, SEXP tolSEXP, SEXP verboseSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    Rcpp::traits::input_parameter< int >::type d(dSEXP);
-    Rcpp::traits::input_parameter< bool >::type centered(centeredSEXP);
-    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
-    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(msg(X, d, centered, maxit, tol, verbose));
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(pava_ls(y));
     return rcpp_result_gen;
 END_RCPP
 }
